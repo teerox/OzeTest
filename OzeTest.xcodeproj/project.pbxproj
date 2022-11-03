@@ -29,6 +29,7 @@
 		04DA86A92913E0F1008E310A /* GenericTableViewDataSourceDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04DA869A2913E0F1008E310A /* GenericTableViewDataSourceDelegate.swift */; };
 		04DA86AA2913E0F1008E310A /* Repository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04DA869C2913E0F1008E310A /* Repository.swift */; };
 		04DA86AC2913E143008E310A /* MockRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04DA86AB2913E143008E310A /* MockRepository.swift */; };
+		04DA86AF2913E6A9008E310A /* RealmSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 04DA86AE2913E6A9008E310A /* RealmSwift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -82,6 +83,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				04DA86AF2913E6A9008E310A /* RealmSwift in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -270,6 +272,9 @@
 			dependencies = (
 			);
 			name = OzeTest;
+			packageProductDependencies = (
+				04DA86AE2913E6A9008E310A /* RealmSwift */,
+			);
 			productName = OzeTest;
 			productReference = 04DA86402913DF93008E310A /* OzeTest.app */;
 			productType = "com.apple.product-type.application";
@@ -342,6 +347,9 @@
 				Base,
 			);
 			mainGroup = 04DA86372913DF93008E310A;
+			packageReferences = (
+				04DA86AD2913E6A9008E310A /* XCRemoteSwiftPackageReference "realm-swift" */,
+			);
 			productRefGroup = 04DA86412913DF93008E310A /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -732,6 +740,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		04DA86AD2913E6A9008E310A /* XCRemoteSwiftPackageReference "realm-swift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/realm/realm-swift.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 10.32.2;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		04DA86AE2913E6A9008E310A /* RealmSwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 04DA86AD2913E6A9008E310A /* XCRemoteSwiftPackageReference "realm-swift" */;
+			productName = RealmSwift;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 04DA86382913DF93008E310A /* Project object */;
 }
