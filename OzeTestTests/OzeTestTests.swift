@@ -4,33 +4,76 @@
 //
 //  Created by Mac on 03/11/2022.
 //
-
+import Combine
 import XCTest
 @testable import OzeTest
 
 final class OzeTestTests: XCTestCase {
 
+    private var mockRepository: MockRepository!
+    private var viewModelToTest: ViewModel!
+    private var cancellables: Set<AnyCancellable> = []
+    
     override func setUpWithError() throws {
-        // Put setup code here. This method is called before the invocation of each test method in the class.
+        mockRepository = MockRepository()
+        viewModelToTest = ViewModel(with: mockRepository)
     }
-
+    
     override func tearDownWithError() throws {
-        // Put teardown code here. This method is called after the invocation of each test method in the class.
+        mockRepository = nil
+        viewModelToTest = nil
     }
-
-    func testExample() throws {
-        // This is an example of a functional test case.
-        // Use XCTAssert and related functions to verify your tests produce the correct results.
-        // Any test you write for XCTest can be annotated as throws and async.
-        // Mark your test throws to produce an unexpected failure when your test encounters an uncaught error.
-        // Mark your test async to allow awaiting for asynchronous code to complete. Check the results with assertions afterwards.
+    
+    func testLaunchDataIsRetured() {
+        let expectation = XCTestExpectation(description: "Data is fetched")
+        viewModelToTest.fetchDataFromApi(page: 1)
+        viewModelToTest.fetchFromDB()
+        viewModelToTest.$itemsFromDb
+            .sink { result in
+                XCTAssertEqual(result.count, 4)
+                expectation.fulfill()
+            }.store(in: &cancellables)
+        wait(for: [expectation], timeout: 1)
     }
-
-    func testPerformanceExample() throws {
-        // This is an example of a performance test case.
-        self.measure {
-            // Put the code you want to measure the time of here.
-        }
+    
+    func testDevDetailsIsReturned() {
+        let mockData = mockRepository.mockRepoData
+        let expectation = XCTestExpectation(description: "Data is fetched")
+        mockRepository.fetchRepoData = Result.success(mockData).publisher.eraseToAnyPublisher()
+        viewModelToTest.fetchRepoData(name: "Ekene")
+        
+        viewModelToTest.$repoDataCount.sink { result in
+            XCTAssert(!result.isEmpty)
+            expectation.fulfill()
+        }.store(in: &cancellables)
+        wait(for: [expectation], timeout: 1)
     }
-
+    
+    func testAddFavourite() {
+        let mockData = mockRepository.mockRepoData
+        let expectation = XCTestExpectation(description: "Data is fetched")
+        viewModelToTest.update(id: 1, updateValue: mockData, save: false)
+        viewModelToTest.update(id: 1, updateValue: mockData, save: true)
+        viewModelToTest.fetchFromDB()
+        viewModelToTest.$itemsFromDb
+            .sink { result in
+                XCTAssertEqual(result.first?.repoData.count, 3)
+                expectation.fulfill()
+            }.store(in: &cancellables)
+        wait(for: [expectation], timeout: 1)
+    }
+    
+    func testRemoveFavourite() {
+        let mockData = mockRepository.mockRepoData
+        let expectation = XCTestExpectation(description: "Data is fetched")
+        viewModelToTest.update(id: 1, updateValue: mockData, save: true)
+        viewModelToTest.update(id: 1, updateValue: mockData, save: false)
+        viewModelToTest.fetchFromDB()
+        viewModelToTest.$itemsFromDb
+            .sink { result in
+                XCTAssertEqual(result.first?.repoData.count, 0)
+                expectation.fulfill()
+            }.store(in: &cancellables)
+        wait(for: [expectation], timeout: 1)
+    }
 }
